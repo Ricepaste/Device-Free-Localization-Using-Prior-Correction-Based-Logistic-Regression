@@ -1,4 +1,4 @@
-from neural_network import *
+from logistic_regression import *
 import matplotlib.pyplot as plt
 import pandas as pd
 from PCA import *
