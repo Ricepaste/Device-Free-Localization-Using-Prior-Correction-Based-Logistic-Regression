@@ -2,8 +2,12 @@ import numpy as np
 
 
 class PCA():
-    def __init__(self, n_components: int):
-        self.n_components = n_components
+    def __init__(self, threshold_percentage: float = 0.8):
+        '''
+        ### Parameters:
+        threshold_percentage (float): 保留的主成分比例,應在0~1之間
+        '''
+        self.threshold = threshold_percentage
         self.components = None
         self.mean = None
 
@@ -19,7 +23,13 @@ class PCA():
         eigenvalues = eigenvalues[idxs]
         eigenvectors = eigenvectors[idxs]
 
-        self.components = eigenvectors[0:self.n_components]
+        total = sum(eigenvalues)
+        current = 0
+        for i, value in enumerate(eigenvalues):
+            current += value
+            if current / total >= self.threshold:
+                self.components = eigenvectors[0:i+1]
+                break
 
     def project(self, X: np.array) -> np.array:
         X = X - self.mean

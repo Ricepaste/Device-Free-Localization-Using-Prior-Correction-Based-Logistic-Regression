@@ -27,15 +27,19 @@ def read_data(file_name: str) -> np.array:
     return data
 
 
-if __name__ == '__main__':
+def main():
     file_name = read_file_name()
     data = read_data(file_name[0])
     print(f"Name of the current file: {file_name[0]}")
     print(f"Shape of the current data: {data.shape}")
 
-    pca = PCA(n_components=10)
+    pca = PCA()
     pca.fit(data)
     X_projected = pca.project(data)
 
     print(f"Shape of X_projected: {X_projected.shape}")
     # print(f"X_projected: {X_projected}")
+
+
+if __name__ == '__main__':
+    main()
