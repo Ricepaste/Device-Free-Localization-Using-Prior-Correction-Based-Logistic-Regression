@@ -1,16 +1,19 @@
-import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 
 WEIGHTS_NORMALISE = True
 LOG_SIGMOID = True
-STEP_LR = True
+STEP_LR = False
+HIDDEN_OUTPUT_FULL_CONNECTIONS = False
+np.random.seed(2)
 
 
 class neuralNetwork:
     def __init__(self, inputnodes=4, hiddennodes=12, outputnodes=3, lr=0.01):
         self.inodes = inputnodes
-        self.hnodes = hiddennodes
+        if (HIDDEN_OUTPUT_FULL_CONNECTIONS):
+            self.hnodes = hiddennodes
+        else:
+            self.hnodes = outputnodes
         self.onodes = outputnodes
         self.lr = lr
 
@@ -22,6 +25,8 @@ class neuralNetwork:
         else:
             self.wih = np.random.rand(self.hnodes, self.inodes+1)
             self.who = np.random.rand(self.onodes, self.hnodes)
+        if HIDDEN_OUTPUT_FULL_CONNECTIONS == False:
+            self.who = np.eye(self.onodes, self.hnodes)
 
         if LOG_SIGMOID:
             self.activation_function = lambda x: 1. / (1. + np.exp(-x))
@@ -65,7 +70,8 @@ class neuralNetwork:
                 if (np.argmax(final_outputs.flatten()) == np.argmax(np.array(targets[i], ndmin=2).T.flatten())):
                     ac += 1
 
-                self.who += self.lr * (output_errors @ hidden_outputs.T)
+                if (HIDDEN_OUTPUT_FULL_CONNECTIONS):
+                    self.who += self.lr * (output_errors @ hidden_outputs.T)
                 self.wih += self.lr * \
                     (hidden_errors @ hidden_outputs.T @
                      (1-hidden_outputs) @ INPUT.T)
