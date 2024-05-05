@@ -22,7 +22,7 @@ Y_test_onehot = np.zeros((Y_test.size, Y_test.max()))
 Y_test_onehot[np.arange(Y_test.size), (Y_test - 1).flatten()] = 1
 
 if PCA_ACTIVE:
-    pca = PCA()
+    pca = PCA(0.9)
     pca.fit(X_train)
     X_train = pca.project(X_train)
     X_test = pca.project(X_test)
