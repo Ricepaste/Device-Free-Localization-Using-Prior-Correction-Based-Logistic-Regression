@@ -1,7 +1,7 @@
 from neural_network import *
 
-X = pd.read_csv('iris_in.csv', header=None)
-Y = pd.read_csv('iris_out.csv', header=None)
+X = pd.read_csv('./iris/iris_in.csv', header=None)
+Y = pd.read_csv('./iris/iris_out.csv', header=None)
 
 X = np.array(X.values)
 Y = np.array(Y.values)
@@ -22,7 +22,7 @@ Y_test_onehot[np.arange(Y_test.size), (Y_test - 1).flatten()] = 1
 # print(X_train.shape)
 # print(Y_train.shape)
 
-n = neuralNetwork(inputnodes=4, hiddennodes=60, outputnodes=3, lr=0.0015)
+n = neuralNetwork(inputnodes=4, hiddennodes=12, outputnodes=3, lr=0.0012)
 # n = neuralNetwork(inputnodes=4, hiddennodes=400, outputnodes=3, lr=0.0015)
 RMSE, AC = n.train(X_train, Y_train_onehot, epochs=100)
 # print(X_test.shape)
