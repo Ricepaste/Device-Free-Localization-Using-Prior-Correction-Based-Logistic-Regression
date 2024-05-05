@@ -4,7 +4,8 @@ WEIGHTS_NORMALISE = True
 LOG_SIGMOID = True
 STEP_LR = False
 HIDDEN_OUTPUT_FULL_CONNECTIONS = False
-np.random.seed(2)
+# np.random.seed(2)
+np.random.seed(1)
 
 
 class neuralNetwork:
@@ -34,7 +35,7 @@ class neuralNetwork:
             self.activation_function = lambda x: x
 
     def _softmax(self, x):
-        exp_values = np.exp(x - np.max(x, axis=0))  # 防止指数爆炸
+        exp_values = np.exp(x - np.max(x, axis=0))  # 防止溢位
         return exp_values / np.sum(exp_values, axis=0)
 
     def _cross_entropy(self, y_true, y_pred):
