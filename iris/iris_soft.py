@@ -21,7 +21,7 @@ Y_test = Y[75:]
 Y_test_onehot = np.zeros((Y_test.size, Y_test.max()))
 Y_test_onehot[np.arange(Y_test.size), (Y_test - 1).flatten()] = 1
 
-n = neuralNetwork(inputnodes=4, hiddennodes=12, outputnodes=3, lr=0.007)
+n = neuralNetwork(inputnodes=4, hiddennodes=3, outputnodes=3, lr=0.007)
 
 RMSE, AC = n.train(X_train, Y_train_onehot, epochs=100)
 
