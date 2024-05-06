@@ -1,11 +1,13 @@
 import numpy as np
 
+# WEIGHTS_NORMALISE = False
 WEIGHTS_NORMALISE = True
 LOG_SIGMOID = True
 STEP_LR = False
 HIDDEN_OUTPUT_FULL_CONNECTIONS = False
-# np.random.seed(2)
-np.random.seed(1)
+BIAS = False
+
+# np.random.seed(10)
 
 
 class neuralNetwork:
@@ -18,14 +20,19 @@ class neuralNetwork:
         self.onodes = outputnodes
         self.lr = lr
 
+        bias = 0
+        if BIAS:
+            bias = 1
+
         if WEIGHTS_NORMALISE:
             self.wih = np.random.normal(
-                0.0, pow(self.hnodes, -0.5), (self.hnodes, self.inodes+1))
+                0.0, pow(self.hnodes, -0.5), (self.hnodes, self.inodes + bias))
             self.who = np.random.normal(
                 0.0, pow(self.onodes, -0.5), (self.onodes, self.hnodes))
         else:
-            self.wih = np.random.rand(self.hnodes, self.inodes+1)
+            self.wih = np.random.rand(self.hnodes, self.inodes + bias)
             self.who = np.random.rand(self.onodes, self.hnodes)
+
         if HIDDEN_OUTPUT_FULL_CONNECTIONS == False:
             self.who = np.eye(self.onodes, self.hnodes)
 
@@ -54,8 +61,11 @@ class neuralNetwork:
             error_squared = []
             for i in range(targets.shape[0]):
                 # 正向傳播
-                INPUT = np.append(np.array([[1]]), np.array(
-                    inputs[i], ndmin=2).T, axis=0)
+                if (BIAS):
+                    INPUT = np.append(np.array([[1]]), np.array(
+                        inputs[i], ndmin=2).T, axis=0)
+                else:
+                    INPUT = np.array(inputs[i], ndmin=2).T
 
                 hidden_inputs = self.wih @ INPUT
                 hidden_outputs = self.activation_function(hidden_inputs)
@@ -81,8 +91,8 @@ class neuralNetwork:
                     np.array(targets[i], ndmin=2).T, final_outputs))
             AC.append(ac / targets.shape[0])
 
-            print("epoch {}:\tCross Entropy Loss = {}".format(
-                epoch, np.mean(error_squared)))
+            # print("epoch {}:\tCross Entropy Loss = {}".format(
+            #     epoch, np.mean(error_squared)))
             CROSS_LOSS.append(np.mean(error_squared))
         print("Total number of epochs: {}".format(epochs))
         print("Final cross entropy loss: {}".format(CROSS_LOSS[-1]))
@@ -92,20 +102,26 @@ class neuralNetwork:
     def query(self, inputs, targets):
         corrects = 0
         for i in range(targets.shape[0]):
-            INPUT = np.append(np.array([[1]]), np.array(
-                inputs[i], ndmin=2).T, axis=0)
+            if (BIAS):
+                INPUT = np.append(np.array([[1]]), np.array(
+                    inputs[i], ndmin=2).T, axis=0)
+            else:
+                INPUT = np.array(inputs[i], ndmin=2).T
+
             hidden_inputs = self.wih @ INPUT
             hidden_outputs = self.activation_function(hidden_inputs)
 
             final_inputs = self.who @ hidden_outputs
             final_outputs = self._softmax(final_inputs)
 
-            print(final_outputs.flatten())
-            print("prediction: ", np.argmax(final_outputs.flatten()))
-            print("target: ", np.array(targets[i], ndmin=2).T.flatten())
-            print(np.argmax(np.array(targets[i], ndmin=2).T.flatten()))
+            # print(final_outputs.flatten())
+            # print("prediction: ", np.argmax(final_outputs.flatten()))
+            # print("target: ", np.array(targets[i], ndmin=2).T.flatten())
+            # print(np.argmax(np.array(targets[i], ndmin=2).T.flatten()))
             if (np.argmax(final_outputs.flatten()) == np.argmax(np.array(targets[i], ndmin=2).T.flatten())):
                 corrects += 1
                 print('AC!!!')
         correct_percent = corrects / targets.shape[0] * 100.
         print("Test Correct Percentage: {}%".format(correct_percent))
+
+        return correct_percent
