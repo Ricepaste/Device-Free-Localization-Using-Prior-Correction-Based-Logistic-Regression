@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from PCA import *
 
+# PCA_ACTIVE = False
 PCA_ACTIVE = True
 
 X = pd.read_csv('./iris/iris_in.csv', header=None)
@@ -32,12 +33,18 @@ if PCA_ACTIVE:
 assert X_train.shape == X_test.shape, print("PCA Dimension Error")
 data_dimension = X_train.shape[1]
 
-n = neuralNetwork(inputnodes=data_dimension,
-                  hiddennodes=3, outputnodes=3, lr=0.007)
+avg = []
+for _ in range(100):
+    n = neuralNetwork(inputnodes=data_dimension,
+                      hiddennodes=3, outputnodes=3, lr=0.007)
 
-RMSE, AC = n.train(X_train, Y_train_onehot, epochs=100)
+    RMSE, AC = n.train(X_train, Y_train_onehot, epochs=100)
 
-n.query(X_test, Y_test_onehot)
+    ac_rate = n.query(X_test, Y_test_onehot)
+    avg.append(ac_rate)
+
+print("Average Accuracy Rate: ", np.mean(avg))
+
 plt.plot(RMSE, color='r', marker='o',
          linewidth=2, markersize=6)
 plt.show()
